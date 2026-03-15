@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --color-background: #0a0a0c;
+  --color-neon-blue: #00d4ff;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #0a0a0c;
+  color: rgb(241 245 249);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-slate-900/60 border border-slate-700/60 rounded-2xl backdrop-blur-lg;
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.6);
+  }
+
+  .kiosk-button {
+    @apply px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-slate-950 font-semibold tracking-wide transition-all duration-200 active:scale-95;
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.6);
+  }
+  .kiosk-button:hover {
+    @apply from-blue-400 to-cyan-300;
+  }
+
+  .kiosk-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/70 px-3 py-1 text-xs font-medium text-slate-300;
+  }
+}
