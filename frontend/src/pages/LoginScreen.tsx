@@ -10,6 +10,7 @@ export function LoginScreen() {
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
+  const [verificationToken, setVerificationToken] = useState('');
   const navigate = useNavigate();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -42,6 +43,11 @@ export function LoginScreen() {
         setStep('otp');
         setResendTimer(60);
         
+        // Store verification token for stateless OTP verification
+        if (data.verificationToken) {
+          setVerificationToken(data.verificationToken);
+        }
+        
         // Show OTP automatically in toast during development for "Simulation"
         if (data.otp && import.meta.env.MODE === 'development') {
            toast.success(`[DEV] Mock OTP: ${data.otp}`, { duration: 10000 });
@@ -70,7 +76,8 @@ export function LoginScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           [method]: identifier,
-          otp: otpString
+          otp: otpString,
+          verificationToken
         }),
       });
       const data = await resp.json();
