@@ -10,6 +10,11 @@ import { AdminLayout } from './components/layout/AdminLayout';
 import { AdminDashboardScreen } from './pages/admin/AdminDashboardScreen';
 import { AdminInventoryScreen } from './pages/admin/AdminInventoryScreen';
 import { AdminSessionsScreen } from './pages/admin/AdminSessionsScreen';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { TermsAndConditionsPage } from './pages/TermsAndConditionsPage';
+import { RefundPolicyPage } from './pages/RefundPolicyPage';
+import { ContactPage } from './pages/ContactPage';
+import { AboutPage } from './pages/AboutPage';
 
 function App() {
   return (
@@ -22,6 +27,11 @@ function App() {
           <Route path="/catalog" element={<CatalogScreen />} />
           <Route path="/rental/:sessionId" element={<ActiveRentalScreen />} />
           <Route path="/return" element={<ReturnScreen />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
+          <Route path="/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboardScreen />} />
