@@ -33,13 +33,14 @@ router.post('/create-order', requireAuth, async (req, res, next) => {
       if (!equipment || equipment.stock < item.quantity) {
         return res.status(400).json({ error: `Equipment ${equipment?.name || item.name} is not available in requested quantity` });
       }
-      const itemTotal = equipment.pricePerHour * item.quantity * duration;
-      totalAmount += itemTotal;
+      const itemTotal = (equipment.pricePerHour * duration) + (equipment.depositAmount || 0);
+      totalAmount += (itemTotal * item.quantity);
       itemsWithDetails.push({
         equipmentId: equipment._id,
         name: equipment.name,
         quantity: item.quantity,
-        pricePerHour: equipment.pricePerHour
+        pricePerHour: equipment.pricePerHour,
+        depositAmount: equipment.depositAmount
       });
     }
 

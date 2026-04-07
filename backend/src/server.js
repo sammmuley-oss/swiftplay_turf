@@ -104,7 +104,8 @@ async function bootstrap() {
       console.log(`🌐 Origins allowed: ${config.corsOrigins.join(', ') || '*'}`);
     });
   } catch (err) {
-    console.error('❌ Failed to start server:', err.message);
+    console.error('❌ Failed to start server:');
+    console.error(err);
     process.exit(1);
   }
 }

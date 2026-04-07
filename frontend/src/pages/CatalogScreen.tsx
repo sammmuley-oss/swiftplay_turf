@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   QrCode
 } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+
 import toast from 'react-hot-toast';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -59,8 +59,8 @@ export function CatalogScreen() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'UPI'>('UPI');
-  const [loading, setLoading] = useState(true);
-  const [orderData, setOrderData] = useState<any>(null);
+  const [_loading, setLoading] = useState(true);
+  const [_orderData, setOrderData] = useState<any>(null);
   const [successData, setSuccessData] = useState<any>(null);
 
   useEffect(() => {
@@ -187,11 +187,11 @@ export function CatalogScreen() {
 
   const openRazorpay = (data: any) => {
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_your_key',
+      key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SQQIbXMMxbWjXh',
       amount: data.amount,
       currency: data.currency,
-      name: 'SWIFTPLAY',
-      description: 'Equipment Rental',
+      name: 'SwiftPlay Sports Vending',
+      description: 'Equipment Rental & Deposit',
       order_id: data.orderId,
       handler: async (response: any) => {
         try {
@@ -239,6 +239,12 @@ export function CatalogScreen() {
       },
     };
     const rzp = new (window as any).Razorpay(options);
+    
+    rzp.on('payment.failed', function (response: any) {
+      toast.error(response.error.description || 'Payment Failed');
+      console.error('Razorpay Error:', response.error);
+    });
+
     rzp.open();
   };
 
@@ -577,12 +583,7 @@ export function CatalogScreen() {
                   <p className="text-xs text-slate-600">Secure transaction powered by SWIFTPLAY Core.</p>
                 </div>
 
-                {paymentMethod === 'UPI' && (
-                  <div className="flex flex-col items-center bg-white p-6 rounded-3xl mb-8">
-                    <QRCodeSVG value={`upi://pay?pa=swiftplay@upi&pn=SwiftPlay%20Sports%20Vending&am=${calculateTotal().toFixed(2)}&cu=INR&tn=Equipment%20Rental`} size={180} />
-                    <p className="text-black font-bold mt-4 uppercase text-sm tracking-widest italic">Scan to Pay via UPI</p>
-                  </div>
-                )}
+
 
                 <button
                   onClick={handleCheckout}

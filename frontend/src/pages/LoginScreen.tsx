@@ -14,7 +14,7 @@ export function LoginScreen() {
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: any;
     if (resendTimer > 0) {
       interval = setInterval(() => {
         setResendTimer((prev) => prev - 1);
@@ -40,8 +40,14 @@ export function LoginScreen() {
       const data = await resp.json();
       if (resp.ok) {
         setStep('otp');
-        setResendTimer(30);
-        toast.success(data.message || 'Verification code sent!');
+        setResendTimer(60);
+        
+        // Show OTP automatically in toast during development for "Simulation"
+        if (data.otp && import.meta.env.MODE === 'development') {
+           toast.success(`[DEV] Mock OTP: ${data.otp}`, { duration: 10000 });
+        } else {
+           toast.success(data.message || 'Verification code sent!');
+        }
       } else {
         toast.error(data.error || 'Request failed');
       }
@@ -157,23 +163,23 @@ export function LoginScreen() {
                   />
                 </div>
                 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="kiosk-button w-full mt-6 flex items-center justify-center gap-2 group"
-                >
-                  {loading ? (
-                    <span className="w-5 h-5 border-2 border-slate-900/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>Send OTP Code</span>
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="kiosk-button w-full mt-6 flex items-center justify-center gap-2 group"
+                  >
+                    {loading ? (
+                      <span className="w-5 h-5 border-2 border-slate-900/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <span>Send OTP Code</span>
+                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </>
+                    )}
+                  </button>
+                </form>
             </motion.div>
           ) : (
             <motion.div

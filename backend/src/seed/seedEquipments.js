@@ -10,7 +10,7 @@ const defaultEquipments = [
     stock: 5,
     lockerId: 'L-101',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=400&fit=crop'
+    image: '/images/cricket_bat.png'
   },
   {
     name: 'Professional Cricket Bat',
@@ -20,7 +20,7 @@ const defaultEquipments = [
     stock: 2,
     lockerId: 'L-102',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1589808945638-54c37eeb5575?w=400&h=400&fit=crop'
+    image: '/images/cricket_bat.png'
   },
   {
     name: 'Cricket Ball',
@@ -30,7 +30,7 @@ const defaultEquipments = [
     stock: 10,
     lockerId: 'L-103',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1593341646631-fbc865a78211?w=400&h=400&fit=crop'
+    image: '/images/cricket_ball.png'
   },
   {
     name: 'Wicket Set',
@@ -40,7 +40,7 @@ const defaultEquipments = [
     stock: 4,
     lockerId: 'L-104',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1629285483773-6b5c360814f8?w=400&h=400&fit=crop'
+    image: '/images/cricket_bat.png'
   },
   {
     name: 'Batting Gloves',
@@ -50,7 +50,7 @@ const defaultEquipments = [
     stock: 6,
     lockerId: 'L-105',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1555029377-5b72945d8b67?w=400&h=400&fit=crop'
+    image: '/images/cricket_ball.png'
   },
   {
     name: 'Cricket Helmet',
@@ -60,7 +60,7 @@ const defaultEquipments = [
     stock: 0,
     lockerId: 'L-106',
     status: 'unavailable',
-    image: 'https://plus.unsplash.com/premium_photo-1679933595562-b91176b1cc8c?w=400&h=400&fit=crop'
+    image: '/images/cricket_ball.png'
   },
   // Football
   {
@@ -71,7 +71,7 @@ const defaultEquipments = [
     stock: 8,
     lockerId: 'L-201',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=400&fit=crop'
+    image: '/images/football.png'
   },
   {
     name: 'Training Football',
@@ -81,7 +81,7 @@ const defaultEquipments = [
     stock: 5,
     lockerId: 'L-202',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=400&h=400&fit=crop'
+    image: '/images/football.png'
   },
   {
     name: 'Goalkeeper Gloves',
@@ -91,7 +91,7 @@ const defaultEquipments = [
     stock: 3,
     lockerId: 'L-203',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1510566337590-2fc1f2110023?w=400&h=400&fit=crop'
+    image: '/images/football.png'
   },
   {
     name: 'Shin Guards',
@@ -101,7 +101,7 @@ const defaultEquipments = [
     stock: 10,
     lockerId: 'L-204',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1628863673413-5aae166f2cce?w=400&h=400&fit=crop'
+    image: '/images/football.png'
   },
   {
     name: 'Training Cones',
@@ -111,7 +111,7 @@ const defaultEquipments = [
     stock: 0,
     lockerId: 'L-205',
     status: 'unavailable',
-    image: 'https://images.unsplash.com/photo-1558230230-67c87c0e5a6b?w=400&h=400&fit=crop'
+    image: '/images/football.png'
   },
   // Badminton
   {
@@ -122,7 +122,7 @@ const defaultEquipments = [
     stock: 6,
     lockerId: 'L-301',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1626225967045-2c70ba934ec7?w=400&h=400&fit=crop'
+    image: '/images/badminton_racket.png'
   },
   {
     name: 'Professional Racket',
@@ -132,7 +132,7 @@ const defaultEquipments = [
     stock: 2,
     lockerId: 'L-302',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1626225967073-4f9eaebd7580?w=400&h=400&fit=crop'
+    image: '/images/badminton_racket.png'
   },
   {
     name: 'Shuttlecock Tube',
@@ -142,7 +142,7 @@ const defaultEquipments = [
     stock: 12,
     lockerId: 'L-303',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1626225967004-98ae0327f27a?w=400&h=400&fit=crop'
+    image: '/images/shuttlecock.png'
   },
   {
     name: 'Badminton Net',
@@ -152,7 +152,7 @@ const defaultEquipments = [
     stock: 4,
     lockerId: 'L-304',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1549419163-4da0ca757134?w=400&h=400&fit=crop'
+    image: '/images/shuttlecock.png'
   },
   // Tennis
   {
@@ -163,7 +163,7 @@ const defaultEquipments = [
     stock: 4,
     lockerId: 'L-401',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a4bd13?w=400&h=400&fit=crop'
+    image: '/images/tennis_racket.png'
   },
   {
     name: 'Professional Tennis Racket',
@@ -173,7 +173,7 @@ const defaultEquipments = [
     stock: 2,
     lockerId: 'L-402',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1542129296-33923eb41a54?w=400&h=400&fit=crop'
+    image: '/images/tennis_racket.png'
   },
   {
     name: 'Tennis Ball Pack',
@@ -183,7 +183,7 @@ const defaultEquipments = [
     stock: 15,
     lockerId: 'L-403',
     status: 'available',
-    image: 'https://images.unsplash.com/photo-1617083277666-63e94db92949?w=400&h=400&fit=crop'
+    image: '/images/tennis_racket.png'
   },
   {
     name: 'Tennis Net',
@@ -193,20 +193,14 @@ const defaultEquipments = [
     stock: 0,
     lockerId: 'L-404',
     status: 'unavailable',
-    image: 'https://images.unsplash.com/photo-1579338559194-a162f4e0c4fa?w=400&h=400&fit=crop'
+    image: '/images/tennis_racket.png'
   }
 ];
 
 export async function seedEquipments() {
   try {
-    console.log('🗑️ Dropping existing equipment catalog to clear old indexes...');
-    try {
-      await Equipment.collection.drop();
-    } catch (e) {
-      if (e.code !== 26) {
-        console.log('Collection might not exist yet, continuing...');
-      }
-    }
+    await Equipment.deleteMany({});
+    console.log('🗑️ Cleared existing equipment');
     
     console.log('🌱 Seeding new extended default equipment...');
     await Equipment.insertMany(defaultEquipments);

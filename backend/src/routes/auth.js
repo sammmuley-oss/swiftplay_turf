@@ -13,17 +13,10 @@ import { hashPhone } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 import bcrypt from 'bcryptjs';
-import twilio from 'twilio';
 import { Otp } from '../models/otp.js';
 import { generateOTP } from '../utils/otp.js';
 import { sendEmail } from '../services/mailer.js';
-
-const twilioClient = config.twilio.accountSid && config.twilio.authToken
-  ? twilio(config.twilio.accountSid, config.twilio.authToken)
-  : null;
-
-// In-memory OTP storage for simulation (Phone -> OTP)
-const otpStore = new Map();
+import { sendSMS } from '../services/smsService.js';
 
 // Tighter rate limiting specifically for OTP-based login finalization
 const loginLimiter = rateLimit({
@@ -101,21 +94,34 @@ router.post('/initiate-2fa', async (req, res, next) => {
       } catch (mailErr) {
         console.error(`[AUTH] Email delivery failed: ${mailErr.message}`);
       }
-    } else if (phone && twilioClient && config.twilio.phoneNumber) {
-      otpStore.set(phone, { otp, expires: expiresAt });
-      try {
-        await twilioClient.messages.create({
-          body: `Your SWIFTPLAY verification code is: ${otp}`,
-          from: config.twilio.phoneNumber,
-          to: phone,
-        });
-        sentVia = 'sms';
-        message = `OTP sent to your phone: ${phone}`;
-      } catch (twilioErr) {
-        console.error(`[AUTH] Twilio delivery failed: ${twilioErr.message}`);
-      }
     } else if (phone) {
-      otpStore.set(phone, { otp, expires: expiresAt });
+      // Normalize phone number to E.164 (roughly)
+      let normalizedPhone = phone.replace(/\D/g, ''); // Keep only digits
+      if (!normalizedPhone.startsWith('+')) {
+        // Assume Indian number if no country code and 10 digits
+        if (normalizedPhone.length === 10) {
+          normalizedPhone = `+91${normalizedPhone}`;
+        } else if (!normalizedPhone.startsWith('91') && normalizedPhone.length > 10) {
+           // If it's longer than 10 but doesn't start with 91, it might have a different country code already but without +
+           normalizedPhone = `+${normalizedPhone}`;
+        } else if (normalizedPhone.startsWith('91')) {
+           normalizedPhone = `+${normalizedPhone}`;
+        }
+      }
+
+      await Otp.findOneAndUpdate({ phone: normalizedPhone }, { otp, expiresAt }, { upsert: true });
+      try {
+        console.log(`[AUTH] Attempting to send SMS to: ${normalizedPhone}`);
+        const smsResult = await sendSMS(normalizedPhone, otp);
+        sentVia = smsResult.type;
+        message = `OTP sent to your phone: ${normalizedPhone}`;
+      } catch (smsErr) {
+        console.error(`[AUTH] SMS delivery failed for ${normalizedPhone}: ${smsErr.message}`);
+        // If we have credentials but delivery failed, don't fall back to simulation
+        if (smsErr.message && smsErr.message.includes('Twilio')) {
+           throw new Error(`SMS delivery failed: ${smsErr.message}`);
+        }
+      }
     }
 
     if (sentVia === 'simulation') {
@@ -160,11 +166,23 @@ router.post('/verify-2fa', loginLimiter, async (req, res, next) => {
         isVerified = true;
         await Otp.deleteOne({ _id: otpDoc._id });
       }
-    } else {
-      const stored = otpStore.get(phone);
-      if (stored && stored.otp === otp && stored.expires > Date.now()) {
+    } else if (phone) {
+      // Normalize phone number to E.164 (same as initiate-2fa)
+      let normalizedPhone = phone.replace(/\D/g, '');
+      if (!normalizedPhone.startsWith('+')) {
+        if (normalizedPhone.length === 10) {
+          normalizedPhone = `+91${normalizedPhone}`;
+        } else if (!normalizedPhone.startsWith('91') && normalizedPhone.length > 10) {
+           normalizedPhone = `+${normalizedPhone}`;
+        } else if (normalizedPhone.startsWith('91')) {
+           normalizedPhone = `+${normalizedPhone}`;
+        }
+      }
+
+      const otpDoc = await Otp.findOne({ phone: normalizedPhone });
+      if (otpDoc && otpDoc.otp === otp && otpDoc.expiresAt > new Date()) {
         isVerified = true;
-        otpStore.delete(phone);
+        await Otp.deleteOne({ _id: otpDoc._id });
       }
     }
 
@@ -177,7 +195,17 @@ router.post('/verify-2fa', loginLimiter, async (req, res, next) => {
     if (email) {
       user = await User.findOne({ email });
     } else {
-      const phoneHash = hashPhone(phone);
+      let normalizedPhone = phone.replace(/\D/g, '');
+      if (!normalizedPhone.startsWith('+')) {
+        if (normalizedPhone.length === 10) {
+          normalizedPhone = `+91${normalizedPhone}`;
+        } else if (!normalizedPhone.startsWith('91') && normalizedPhone.length > 10) {
+           normalizedPhone = `+${normalizedPhone}`;
+        } else if (normalizedPhone.startsWith('91')) {
+           normalizedPhone = `+${normalizedPhone}`;
+        }
+      }
+      const phoneHash = hashPhone(normalizedPhone);
       user = await User.findOne({ phoneHash });
     }
 

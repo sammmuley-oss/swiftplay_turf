@@ -7,51 +7,63 @@ dotenv.config();
 const equipments = [
   {
     name: 'Standard Cricket Bat',
-    sport: 'Cricket',
+    sport: 'cricket',
     pricePerHour: 50,
-    image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=400&fit=crop',
-    availableQuantity: 5,
-    status: 'available'
+    image: '/images/cricket_bat.png',
+    stock: 5,
+    status: 'available',
+    depositAmount: 100,
+    lockerId: 'C1'
   },
   {
     name: 'Leather Cricket Ball',
-    sport: 'Cricket',
+    sport: 'cricket',
     pricePerHour: 20,
-    image: 'https://images.unsplash.com/photo-1593341646631-fbc865a78211?w=400&h=400&fit=crop',
-    availableQuantity: 10,
-    status: 'available'
+    image: '/images/cricket_ball.png',
+    stock: 10,
+    status: 'available',
+    depositAmount: 50,
+    lockerId: 'C2'
   },
   {
     name: 'FIFA Official Football',
-    sport: 'Football',
+    sport: 'football',
     pricePerHour: 40,
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=400&fit=crop',
-    availableQuantity: 8,
-    status: 'available'
+    image: '/images/football.png',
+    stock: 8,
+    status: 'available',
+    depositAmount: 150,
+    lockerId: 'F1'
   },
   {
     name: 'Pro Badminton Racket',
-    sport: 'Badminton',
+    sport: 'badminton',
     pricePerHour: 30,
-    image: 'https://images.unsplash.com/photo-1626225967045-2c70ba934ec7?w=400&h=400&fit=crop',
-    availableQuantity: 6,
-    status: 'available'
+    image: '/images/badminton_racket.png',
+    stock: 6,
+    status: 'available',
+    depositAmount: 80,
+    lockerId: 'B1'
   },
   {
     name: 'YONEX Shuttlecocks (6pk)',
-    sport: 'Badminton',
+    sport: 'badminton',
     pricePerHour: 15,
-    image: 'https://images.unsplash.com/photo-1626225967004-98ae0327f27a?w=400&h=400&fit=crop',
-    availableQuantity: 12,
-    status: 'available'
+    image: '/images/shuttlecock.png',
+    stock: 12,
+    status: 'available',
+    depositAmount: 30,
+    lockerId: 'B2'
   },
   {
     name: 'Roger Federer Signature Racket',
-    sport: 'Tennis',
+    sport: 'tennis',
     pricePerHour: 60,
-    image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a4bd13?w=400&h=400&fit=crop',
-    availableQuantity: 4,
-    status: 'available'
+    image: '/images/tennis_racket.png',
+    stock: 4,
+    status: 'available',
+    depositAmount: 200,
+    lockerId: 'T1'
   }
 ];
 

@@ -26,7 +26,6 @@
     "mongoose": "^9.2.1",
     "morgan": "^1.10.1",
     "nodemailer": "^8.0.2",
-    "qrcode.react": "^4.2.0",
     "razorpay": "^2.9.6",
     "socket.io": "^4.8.3",
     "twilio": "^5.13.0"
