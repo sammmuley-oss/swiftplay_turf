@@ -75,7 +75,7 @@ export function CatalogScreen() {
   const fetchEquipment = async () => {
     try {
       const token = localStorage.getItem('token');
-      const resp = await fetch('http://localhost:4000/api/equipment', {
+      const resp = await fetch('/api/equipment', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export function CatalogScreen() {
     
     try {
       const token = localStorage.getItem('token');
-      const resp = await fetch('http://localhost:4000/api/payments/create-order', {
+      const resp = await fetch('/api/payments/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ export function CatalogScreen() {
       handler: async (response: any) => {
         try {
           const token = localStorage.getItem('token');
-          const verifyResp = await fetch('http://localhost:4000/api/payments/verify', {
+          const verifyResp = await fetch('/api/payments/verify', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

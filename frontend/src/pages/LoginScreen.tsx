@@ -30,7 +30,7 @@ export function LoginScreen() {
 
     setLoading(true);
     try {
-      const resp = await fetch('http://localhost:4000/api/auth/initiate-2fa', {
+      const resp = await fetch('/api/auth/initiate-2fa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -65,7 +65,7 @@ export function LoginScreen() {
 
     setLoading(true);
     try {
-      const resp = await fetch('http://localhost:4000/api/auth/verify-2fa', {
+      const resp = await fetch('/api/auth/verify-2fa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
