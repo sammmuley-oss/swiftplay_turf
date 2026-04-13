@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
 export function LoginScreen() {
-  const [method, setMethod] = useState<'phone' | 'email'>('phone');
   const [identifier, setIdentifier] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
@@ -26,17 +25,14 @@ export function LoginScreen() {
 
   const handleInitiate2fa = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (method === 'phone' && identifier.length < 10) return toast.error('Enter valid phone number');
-    if (method === 'email' && !identifier.includes('@')) return toast.error('Enter valid email');
+    if (!identifier.includes('@')) return toast.error('Enter a valid email address');
 
     setLoading(true);
     try {
       const resp = await fetch('/api/auth/initiate-2fa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          [method]: identifier
-        }),
+        body: JSON.stringify({ email: identifier }),
       });
       const data = await resp.json();
       if (resp.ok) {
@@ -48,12 +44,7 @@ export function LoginScreen() {
           setVerificationToken(data.verificationToken);
         }
         
-        // Show OTP automatically in toast during development for "Simulation"
-        if (data.otp && import.meta.env.MODE === 'development') {
-           toast.success(`[DEV] Mock OTP: ${data.otp}`, { duration: 10000 });
-        } else {
-           toast.success(data.message || 'Verification code sent!');
-        }
+        toast.success(data.message || 'Verification code sent!');
       } else {
         toast.error(data.error || 'Request failed');
       }
@@ -75,7 +66,7 @@ export function LoginScreen() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          [method]: identifier,
+          email: identifier,
           otp: otpString,
           verificationToken
         }),
@@ -136,35 +127,20 @@ export function LoginScreen() {
               transition={{ type: 'spring', stiffness: 100, damping: 20 }}
             >
               <h1 className="text-3xl font-display font-bold text-white mb-2 text-center">SwiftPlay</h1>
-              <p className="text-slate-400 text-sm mb-8 text-center uppercase tracking-widest">OTP Login Only</p>
+              <p className="text-slate-400 text-sm mb-8 text-center uppercase tracking-widest">Email OTP Login</p>
 
-              <div className="flex bg-slate-900/80 p-1 rounded-xl mb-6">
-                <button
-                  type="button"
-                  onClick={() => { setMethod('phone'); setIdentifier(''); }}
-                  className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${method === 'phone' ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
-                >
-                  Mobile Phone
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setMethod('email'); setIdentifier(''); }}
-                  className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${method === 'email' ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
-                >
-                  Email ID
-                </button>
-              </div>
+
 
               <form onSubmit={handleInitiate2fa} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">
-                    {method === 'phone' ? 'Phone Number' : 'Email Address'}
+                    Email Address
                   </label>
                   <input
-                    type={method === 'phone' ? 'tel' : 'email'}
+                    type="email"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder={method === 'phone' ? '+91 98765 43210' : 'user@example.com'}
+                    placeholder="user@example.com"
                     className="w-full px-5 py-3.5 rounded-2xl bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-600 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/20 focus:outline-none transition-all"
                     required
                   />
@@ -249,7 +225,7 @@ export function LoginScreen() {
                     onClick={() => { setStep('credentials'); setOtp(['', '', '', '', '', '']); }}
                     className="w-full text-slate-500 hover:text-slate-300 text-xs uppercase tracking-widest transition-colors py-2 mt-4"
                   >
-                    Change Contact Info
+                    Change Email
                   </button>
                 </div>
               </form>

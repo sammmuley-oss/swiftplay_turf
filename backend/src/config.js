@@ -36,6 +36,12 @@ export const config = {
     from: process.env.EMAIL_FROM || "SWIFTPLAY <noreply@swiftplay.com>",
   },
 
+  // SMS
+  smsMode: process.env.SMS_MODE || "simulation",
+  fast2sms: {
+    apiKey: process.env.FAST2SMS_API_KEY || "",
+  },
+
   // CORS
   corsOrigins: (process.env.CORS_ORIGINS || "http://localhost:5173")
     .split(",")

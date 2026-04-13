@@ -1,0 +1,1 @@
+{"status_code":996,"message":"Before using OTP Message API, complete website verification. Visit OTP Message menu or use DLT SMS API."}

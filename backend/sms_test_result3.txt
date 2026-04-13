@@ -1,0 +1,1 @@
+{"status_code":999,"message":"You need to complete one transaction of 100 INR or more before using API route."}

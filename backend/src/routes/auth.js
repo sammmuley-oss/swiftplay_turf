@@ -4,11 +4,6 @@ import Joi from 'joi';
 import rateLimit from 'express-rate-limit';
 import { config } from '../config.js';
 import { User } from '../models/User.js';
-import { hashPhone } from '../middleware/authMiddleware.js';
-
-// NOTE: In a real deployment, Firebase Phone Auth should be used on the client.
-// This endpoint expects a verified phone number and Firebase user UID/ID token
-// to be validated before issuing a backend JWT.
 
 const router = express.Router();
 
@@ -16,7 +11,6 @@ import bcrypt from 'bcryptjs';
 import { Otp } from '../models/otp.js';
 import { generateOTP } from '../utils/otp.js';
 import { sendEmail } from '../services/mailer.js';
-import { sendSMS } from '../services/smsService.js';
 
 // Tighter rate limiting specifically for OTP-based login finalization
 const loginLimiter = rateLimit({
@@ -27,13 +21,12 @@ const loginLimiter = rateLimit({
 });
 
 const initiate2faSchema = Joi.object({
-  phone: Joi.string().min(8).max(20).optional(),
-  email: Joi.string().email().optional(),
-}).or('phone', 'email');
+  email: Joi.string().email().required(),
+});
 
 /**
  * PUBLIC ROUTE
- * Step 1: Send OTP (SMS or Email)
+ * Step 1: Send OTP via Email
  * Used for both Login and Registration flow
  */
 // PUBLIC ROUTE - Initiate 2FA (Login/Register)
@@ -46,87 +39,40 @@ router.post('/initiate-2fa', async (req, res, next) => {
       return res.status(400).json({ error: error.message });
     }
 
-    const { phone, email } = value;
-    const identifier = email || phone;
-    const phoneHash = phone ? hashPhone(phone) : null;
+    const { email } = value;
 
-    let user;
-    if (email) {
-      user = await User.findOne({ email });
-    } else {
-      user = await User.findOne({ phoneHash });
-    }
+    let user = await User.findOne({ email });
 
     if (!user) {
-      console.log(`[AUTH] Creating new user for: ${identifier}`);
-      const userData = {
-        loyaltyPoints: 0,
-      };
-      if (phoneHash) userData.phoneHash = phoneHash;
-      if (email) userData.email = email;
-
-      user = await User.create(userData);
+      console.log(`[AUTH] Creating new user for: ${email}`);
+      user = await User.create({ email, loyaltyPoints: 0 });
     }
 
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 5 * 60000);
 
-    let sentVia = 'simulation';
-    let message = 'Step 1 Complete: OTP generated.';
+    await Otp.findOneAndUpdate({ email }, { otp, expiresAt }, { upsert: true });
 
-    if (email) {
-      await Otp.findOneAndUpdate({ email }, { otp, expiresAt }, { upsert: true });
-      try {
-        await sendEmail({
-          to: email,
-          subject: 'Your SWIFTPLAY Verification Code',
-          html: `
-            <div style="font-family: sans-serif; padding: 20px; color: #333; background: #0a0a0c; border-radius: 12px; border: 1px solid #333 text-align: center;">
-              <h2 style="color: #00d4ff;">SwiftPlay Security</h2>
-              <p style="color: #ccc;">Your verification code is:</p>
-              <h1 style="color: #fff; letter-spacing: 10px; background: #1a1a1c; padding: 20px; text-align: center; border-radius: 8px;">${otp}</h1>
-              <p style="color: #777; font-size: 12px;">This code expires in 5 minutes.</p>
-            </div>
-          `
-        });
-        sentVia = 'email';
-        message = `OTP sent to your email: ${email}`;
-      } catch (mailErr) {
-        console.error(`[AUTH] Email delivery failed: ${mailErr.message}`);
-      }
-    } else if (phone) {
-      // Normalize phone number to E.164 (roughly)
-      let normalizedPhone = phone.replace(/\D/g, ''); // Keep only digits
-      if (!normalizedPhone.startsWith('+')) {
-        // Assume Indian number if no country code and 10 digits
-        if (normalizedPhone.length === 10) {
-          normalizedPhone = `+91${normalizedPhone}`;
-        } else if (!normalizedPhone.startsWith('91') && normalizedPhone.length > 10) {
-           // If it's longer than 10 but doesn't start with 91, it might have a different country code already but without +
-           normalizedPhone = `+${normalizedPhone}`;
-        } else if (normalizedPhone.startsWith('91')) {
-           normalizedPhone = `+${normalizedPhone}`;
-        }
-      }
+    let sentVia = 'email';
+    let message = `OTP sent to your email: ${email}`;
 
-      await Otp.findOneAndUpdate({ phone: normalizedPhone }, { otp, expiresAt }, { upsert: true });
-      try {
-        console.log(`[AUTH] Attempting to send SMS to: ${normalizedPhone}`);
-        const smsResult = await sendSMS(normalizedPhone, otp);
-        sentVia = smsResult.type;
-        message = `OTP sent to your phone: ${normalizedPhone}`;
-      } catch (smsErr) {
-        console.error(`[AUTH] SMS delivery failed for ${normalizedPhone}: ${smsErr.message}`);
-        // If we have credentials but delivery failed, don't fall back to simulation
-        if (smsErr.message && smsErr.message.includes('Twilio')) {
-           throw new Error(`SMS delivery failed: ${smsErr.message}`);
-        }
-      }
-    }
-
-    if (sentVia === 'simulation') {
-      console.log(`[AUTH-2FA] (SIMULATED) OTP for ${identifier}: ${otp}`);
-      message = `Step 1 Complete: OTP generated (SIMULATED: ${otp})`;
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Your SWIFTPLAY Verification Code',
+        html: `
+          <div style="font-family: sans-serif; padding: 20px; color: #333; background: #0a0a0c; border-radius: 12px; border: 1px solid #333; text-align: center;">
+            <h2 style="color: #00d4ff;">SwiftPlay Security</h2>
+            <p style="color: #ccc;">Your verification code is:</p>
+            <h1 style="color: #fff; letter-spacing: 10px; background: #1a1a1c; padding: 20px; text-align: center; border-radius: 8px;">${otp}</h1>
+            <p style="color: #777; font-size: 12px;">This code expires in 5 minutes.</p>
+          </div>
+        `
+      });
+    } catch (mailErr) {
+      console.error(`[AUTH] Email delivery failed: ${mailErr.message}`);
+      sentVia = 'fallback';
+      message = 'OTP generated but email delivery failed. Check server logs.';
     }
 
     res.json({ success: true, message, type: sentVia });
@@ -137,10 +83,9 @@ router.post('/initiate-2fa', async (req, res, next) => {
 });
 
 const verify2faSchema = Joi.object({
-  phone: Joi.string().min(8).max(20).optional(),
-  email: Joi.string().email().optional(),
+  email: Joi.string().email().required(),
   otp: Joi.string().length(6).required(),
-}).or('phone', 'email');
+});
 
 /**
  * PUBLIC ROUTE
@@ -155,62 +100,20 @@ router.post('/verify-2fa', loginLimiter, async (req, res, next) => {
       return res.status(400).json({ error: error.message });
     }
 
-    const { phone, email, otp } = value;
-    const identifier = email || phone;
+    const { email, otp } = value;
 
-    let isVerified = false;
-
-    if (email) {
-      const otpDoc = await Otp.findOne({ email });
-      if (otpDoc && otpDoc.otp === otp && otpDoc.expiresAt > new Date()) {
-        isVerified = true;
-        await Otp.deleteOne({ _id: otpDoc._id });
-      }
-    } else if (phone) {
-      // Normalize phone number to E.164 (same as initiate-2fa)
-      let normalizedPhone = phone.replace(/\D/g, '');
-      if (!normalizedPhone.startsWith('+')) {
-        if (normalizedPhone.length === 10) {
-          normalizedPhone = `+91${normalizedPhone}`;
-        } else if (!normalizedPhone.startsWith('91') && normalizedPhone.length > 10) {
-           normalizedPhone = `+${normalizedPhone}`;
-        } else if (normalizedPhone.startsWith('91')) {
-           normalizedPhone = `+${normalizedPhone}`;
-        }
-      }
-
-      const otpDoc = await Otp.findOne({ phone: normalizedPhone });
-      if (otpDoc && otpDoc.otp === otp && otpDoc.expiresAt > new Date()) {
-        isVerified = true;
-        await Otp.deleteOne({ _id: otpDoc._id });
-      }
-    }
-
-    if (!isVerified) {
-      console.warn(`[AUTH] Invalid/Expired OTP for: ${identifier}`);
+    const otpDoc = await Otp.findOne({ email });
+    if (!otpDoc || otpDoc.otp !== otp || otpDoc.expiresAt <= new Date()) {
+      console.warn(`[AUTH] Invalid/Expired OTP for: ${email}`);
       return res.status(410).json({ error: 'Invalid or expired OTP' });
     }
 
-    let user;
-    if (email) {
-      user = await User.findOne({ email });
-    } else {
-      let normalizedPhone = phone.replace(/\D/g, '');
-      if (!normalizedPhone.startsWith('+')) {
-        if (normalizedPhone.length === 10) {
-          normalizedPhone = `+91${normalizedPhone}`;
-        } else if (!normalizedPhone.startsWith('91') && normalizedPhone.length > 10) {
-           normalizedPhone = `+${normalizedPhone}`;
-        } else if (normalizedPhone.startsWith('91')) {
-           normalizedPhone = `+${normalizedPhone}`;
-        }
-      }
-      const phoneHash = hashPhone(normalizedPhone);
-      user = await User.findOne({ phoneHash });
-    }
+    await Otp.deleteOne({ _id: otpDoc._id });
+
+    const user = await User.findOne({ email });
 
     if (!user) {
-      console.error(`[AUTH] User session lost for: ${identifier}`);
+      console.error(`[AUTH] User session lost for: ${email}`);
       return res.status(404).json({ error: 'User session lost. Please try again.' });
     }
 
@@ -231,7 +134,7 @@ router.post('/verify-2fa', loginLimiter, async (req, res, next) => {
       maxAge: config.sessionTimeout,
     });
 
-    console.log(`[AUTH] Login successful for: ${identifier}`);
+    console.log(`[AUTH] Login successful for: ${email}`);
     res.json({
       token,
       user: {
