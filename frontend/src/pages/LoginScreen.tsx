@@ -9,7 +9,7 @@ export function LoginScreen() {
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [verificationToken, setVerificationToken] = useState('');
+  const [_verificationToken, setVerificationToken] = useState('');
   const navigate = useNavigate();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
