@@ -68,7 +68,6 @@ export function LoginScreen() {
         body: JSON.stringify({
           email: identifier,
           otp: otpString,
-          verificationToken
         }),
       });
       const data = await resp.json();
