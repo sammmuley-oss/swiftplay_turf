@@ -11,7 +11,7 @@ export function HomeScreen() {
         </h1>
         <p className="text-slate-400 text-lg mb-10">SWIFTPLAY – Smart IoT Sports Rental</p>
         <div className="flex gap-4">
-          <Link to="/login" className="kiosk-button">Get Started</Link>
+          <Link to="/catalog" className="kiosk-button">Get Started</Link>
           <Link to="/catalog" className="px-6 py-3 rounded-full border border-slate-600 text-slate-300 hover:border-cyan-500 hover:text-cyan-400 transition-colors">
             Browse Equipment
           </Link>

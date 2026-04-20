@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { KioskLayout } from './components/layout/KioskLayout';
 import { HomeScreen } from './pages/HomeScreen';
-import { LoginScreen } from './pages/LoginScreen';
+
 import { CatalogScreen } from './pages/CatalogScreen';
 import { ActiveRentalScreen } from './pages/ActiveRentalScreen';
 import { ReturnScreen } from './pages/ReturnScreen';
@@ -23,7 +23,7 @@ function App() {
       <Routes>
         <Route element={<KioskLayout />}>
           <Route path="/" element={<HomeScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
+
           <Route path="/catalog" element={<CatalogScreen />} />
           <Route path="/rental/:sessionId" element={<ActiveRentalScreen />} />
           <Route path="/return" element={<ReturnScreen />} />

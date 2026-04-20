@@ -5,7 +5,7 @@ const equipmentSchema = new mongoose.Schema(
     name: { type: String, required: true },
     sport: { 
       type: String, 
-      enum: ['cricket', 'football', 'badminton', 'tennis'], 
+      enum: ['cricket', 'football', 'badminton'], 
       required: true,
       index: true
     },

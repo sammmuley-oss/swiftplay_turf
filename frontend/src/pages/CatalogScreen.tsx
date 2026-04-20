@@ -48,7 +48,6 @@ const SPORTS = [
   { name: 'Cricket', icon: '🏏' },
   { name: 'Football', icon: '⚽' },
   { name: 'Badminton', icon: '🏸' },
-  { name: 'Tennis', icon: '🎾' }
 ];
 
 export function CatalogScreen() {
