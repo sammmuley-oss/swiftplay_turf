@@ -2,7 +2,6 @@ import express from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { config } from '../config.js';
-import { requireAuth } from '../middleware/authMiddleware.js';
 import { Equipment } from '../models/Equipment.js';
 import { RentalSession } from '../models/RentalSession.js';
 
@@ -16,7 +15,7 @@ const razorpay = new Razorpay({
 /**
  * POST /api/payments/create-order
  */
-router.post('/create-order', requireAuth, async (req, res, next) => {
+router.post('/create-order', async (req, res, next) => {
   try {
     const { equipmentList, duration, paymentMethod } = req.body;
 
@@ -46,7 +45,7 @@ router.post('/create-order', requireAuth, async (req, res, next) => {
 
     if (paymentMethod === 'Cash') {
       const rental = await RentalSession.create({
-        userId: req.user._id,
+        userId: req.body.userId || 'kiosk-guest',
         equipmentList: itemsWithDetails,
         duration,
         totalAmount,
@@ -95,7 +94,7 @@ router.post('/create-order', requireAuth, async (req, res, next) => {
 /**
  * POST /api/payments/verify
  */
-router.post('/verify', requireAuth, async (req, res, next) => {
+router.post('/verify', async (req, res, next) => {
   try {
     const { 
       razorpay_order_id, 
@@ -115,7 +114,7 @@ router.post('/verify', requireAuth, async (req, res, next) => {
     if (razorpay_signature === expectedSign) {
       // Create final rental record
       const rental = await RentalSession.create({
-        userId: req.user._id,
+        userId: req.body.userId || 'kiosk-guest',
         equipmentList,
         duration,
         totalAmount,

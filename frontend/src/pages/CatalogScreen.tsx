@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, 
@@ -9,7 +10,10 @@ import {
   Minus, 
   ChevronRight,
   CheckCircle2,
-  QrCode
+  QrCode,
+  Timer,
+  AlertTriangle,
+  Home
 } from 'lucide-react';
 
 import toast from 'react-hot-toast';
@@ -61,6 +65,11 @@ export function CatalogScreen() {
   const [_loading, setLoading] = useState(true);
   const [_orderData, setOrderData] = useState<any>(null);
   const [successData, setSuccessData] = useState<any>(null);
+  const [activeSession, setActiveSession] = useState<any>(null);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [timerExpired, setTimerExpired] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEquipment();
@@ -71,16 +80,65 @@ export function CatalogScreen() {
     document.body.appendChild(script);
   }, []);
 
+  // Timer countdown effect
+  useEffect(() => {
+    if (activeSession && timeLeft > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            if (timerRef.current) clearInterval(timerRef.current);
+            setTimerExpired(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [activeSession]);
+
+  // Redirect to home after timer expires
+  useEffect(() => {
+    if (timerExpired) {
+      const redirectTimeout = setTimeout(() => {
+        navigate('/');
+      }, 6000);
+      return () => clearTimeout(redirectTimeout);
+    }
+  }, [timerExpired, navigate]);
+
+  const startSession = () => {
+    setActiveSession({
+      rentalId: successData.rentalId,
+      equipmentList: successData.equipmentList,
+      duration: successData.duration,
+      totalAmount: successData.totalAmount,
+    });
+    setTimeLeft(successData.duration * 60 * 60); // convert hours to seconds
+    setSuccessData(null);
+  };
+
+  const formatTime = (seconds: number) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hrs > 0) {
+      return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getTimerProgress = () => {
+    if (!activeSession) return 0;
+    const totalSeconds = activeSession.duration * 60 * 60;
+    return ((totalSeconds - timeLeft) / totalSeconds) * 100;
+  };
+
   const fetchEquipment = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const resp = await fetch('/api/equipment', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const resp = await fetch('/api/equipment');
       
       const data = await resp.json();
       if (resp.ok) {
@@ -139,13 +197,9 @@ export function CatalogScreen() {
     if (cart.length === 0) return toast.error('Cart is empty');
     
     try {
-      const token = localStorage.getItem('token');
       const resp = await fetch('/api/payments/create-order', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           equipmentList: cart.map(i => ({ 
             equipmentId: i._id, 
@@ -194,13 +248,9 @@ export function CatalogScreen() {
       order_id: data.orderId,
       handler: async (response: any) => {
         try {
-          const token = localStorage.getItem('token');
           const verifyResp = await fetch('/api/payments/verify', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -251,6 +301,152 @@ export function CatalogScreen() {
     ? equipment 
     : equipment.filter(item => item.sport.toLowerCase() === filter.toLowerCase());
 
+  // ─── ACTIVE SESSION TIMER SCREEN ────────────────────────────────
+  if (activeSession) {
+    const progress = getTimerProgress();
+    const isLowTime = timeLeft <= 300; // last 5 minutes
+    const circumference = 2 * Math.PI * 120;
+    const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+    if (timerExpired) {
+      return (
+        <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-lg w-full bg-[#16161a] border border-amber-500/30 rounded-3xl p-10 text-center shadow-[0_0_60px_rgba(245,158,11,0.15)]"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
+            >
+              <AlertTriangle className="w-12 h-12 text-amber-400" />
+            </motion.div>
+            <h1 className="text-4xl font-display font-bold text-white mb-3">Time's Up!</h1>
+            <p className="text-amber-400 text-lg mb-6">Your turf time is over</p>
+            <p className="text-slate-400 mb-4">Please return the equipment to the kiosk.</p>
+
+            <div className="bg-[#1c1c21] rounded-2xl p-5 mb-8 text-left">
+              <h3 className="text-slate-500 text-xs uppercase tracking-widest mb-3">Session Summary</h3>
+              <ul className="space-y-2 mb-4">
+                {activeSession.equipmentList.map((item: any) => (
+                  <li key={item._id} className="flex justify-between text-white text-sm">
+                    <span>{item.name} x{item.quantity}</span>
+                    <span className="text-slate-500">₹{item.pricePerHour * item.quantity}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="border-t border-slate-800 pt-3 flex justify-between font-bold text-white">
+                <span>Total Paid</span>
+                <span className="text-cyan-400 font-display">₹{activeSession.totalAmount}</span>
+              </div>
+            </div>
+
+            <p className="text-slate-500 text-sm mb-6">Redirecting to home in a few seconds...</p>
+            <button
+              onClick={() => navigate('/')}
+              className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+            >
+              <Home className="w-5 h-5" /> Go Home Now
+            </button>
+          </motion.div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-lg w-full bg-[#16161a] border border-cyan-500/20 rounded-3xl p-10 text-center shadow-[0_0_60px_rgba(34,211,238,0.08)]"
+        >
+          {/* Timer Circle */}
+          <div className="relative w-64 h-64 mx-auto mb-8">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 260 260">
+              {/* Background circle */}
+              <circle
+                cx="130" cy="130" r="120"
+                fill="none"
+                stroke="#1e293b"
+                strokeWidth="8"
+              />
+              {/* Progress circle */}
+              <circle
+                cx="130" cy="130" r="120"
+                fill="none"
+                stroke={isLowTime ? '#f59e0b' : '#22d3ee'}
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                className="transition-all duration-1000 ease-linear"
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <Timer className={`w-8 h-8 mb-2 ${isLowTime ? 'text-amber-400' : 'text-cyan-400'}`} />
+              <span className={`text-5xl font-display font-bold tabular-nums ${isLowTime ? 'text-amber-400' : 'text-white'}`}>
+                {formatTime(timeLeft)}
+              </span>
+              <span className="text-slate-500 text-sm mt-2 uppercase tracking-widest">Remaining</span>
+            </div>
+          </div>
+
+          {/* Pulsing indicator */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <motion.div
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className={`w-3 h-3 rounded-full ${isLowTime ? 'bg-amber-500' : 'bg-green-500'}`}
+            />
+            <span className={`text-sm font-bold uppercase tracking-widest ${isLowTime ? 'text-amber-400' : 'text-green-400'}`}>
+              {isLowTime ? 'Ending Soon' : 'Session Active'}
+            </span>
+          </div>
+
+          {/* Equipment Details */}
+          <div className="bg-[#1c1c21] rounded-2xl p-5 mb-6 text-left">
+            <h3 className="text-slate-500 text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5" /> Your Equipment
+            </h3>
+            <ul className="space-y-3">
+              {activeSession.equipmentList.map((item: any) => (
+                <li key={item._id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {item.image && (
+                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-800 shrink-0">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-white font-bold text-sm uppercase italic">{item.name}</span>
+                      <span className="text-slate-500 text-xs block">Qty: {item.quantity}</span>
+                    </div>
+                  </div>
+                  <span className="text-slate-400 font-mono text-sm">₹{item.pricePerHour * item.quantity}/hr</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Session Info */}
+          <div className="bg-[#1c1c21] rounded-2xl p-4 text-left">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-500">Duration</span>
+              <span className="text-white font-bold">{activeSession.duration} {activeSession.duration === 1 ? 'Hour' : activeSession.duration < 1 ? 'Minutes' : 'Hours'}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500">Total Paid</span>
+              <span className="text-cyan-400 font-display font-bold">₹{activeSession.totalAmount}</span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // ─── PAYMENT SUCCESS SCREEN ────────────────────────────────────
   if (successData) {
     return (
       <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-6">
@@ -284,10 +480,10 @@ export function CatalogScreen() {
           <p className="text-slate-400 mb-8">{successData.message}</p>
           
           <button 
-            onClick={() => { setSuccessData(null); fetchEquipment(); }}
-            className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-2xl transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+            onClick={startSession}
+            className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-2xl transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] flex items-center justify-center gap-2"
           >
-            Done
+            <Timer className="w-5 h-5" /> Start Session
           </button>
         </motion.div>
       </div>

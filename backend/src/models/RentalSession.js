@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const rentalSchema = new mongoose.Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    userId: { type: mongoose.Schema.Types.Mixed, ref: 'User', index: true },
     equipmentList: [
       {
         equipmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Equipment' },
