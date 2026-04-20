@@ -13,7 +13,8 @@ import {
   QrCode,
   Timer,
   AlertTriangle,
-  Home
+  Home,
+  XCircle
 } from 'lucide-react';
 
 import toast from 'react-hot-toast';
@@ -68,6 +69,7 @@ export function CatalogScreen() {
   const [activeSession, setActiveSession] = useState<any>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [timerExpired, setTimerExpired] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const navigate = useNavigate();
 
@@ -431,7 +433,7 @@ export function CatalogScreen() {
           </div>
 
           {/* Session Info */}
-          <div className="bg-[#1c1c21] rounded-2xl p-4 text-left">
+          <div className="bg-[#1c1c21] rounded-2xl p-4 mb-6 text-left">
             <div className="flex justify-between text-sm mb-2">
               <span className="text-slate-500">Duration</span>
               <span className="text-white font-bold">{activeSession.duration} {activeSession.duration === 1 ? 'Hour' : activeSession.duration < 1 ? 'Minutes' : 'Hours'}</span>
@@ -441,7 +443,65 @@ export function CatalogScreen() {
               <span className="text-cyan-400 font-display font-bold">₹{activeSession.totalAmount}</span>
             </div>
           </div>
+
+          {/* Cancel Booking Button */}
+          <button
+            onClick={() => setShowCancelConfirm(true)}
+            className="w-full py-4 bg-transparent border border-red-500/30 hover:bg-red-500/10 text-red-400 font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
+          >
+            <XCircle className="w-5 h-5" /> Cancel Booking
+          </button>
         </motion.div>
+
+        {/* Cancel Confirmation Modal */}
+        <AnimatePresence>
+          {showCancelConfirm && (
+            <div className="fixed inset-0 flex items-center justify-center z-[70] p-6">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowCancelConfirm(false)}
+                className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-sm bg-[#16161a] border border-red-500/30 rounded-3xl p-8 text-center shadow-[0_0_50px_rgba(239,68,68,0.1)]"
+              >
+                <div className="w-16 h-16 bg-red-500/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <AlertTriangle className="w-8 h-8 text-red-400" />
+                </div>
+                <h2 className="text-2xl font-display font-bold text-white mb-2">Cancel Booking?</h2>
+                <p className="text-slate-400 text-sm mb-8">
+                  Are you sure you want to cancel your current session? Please return the equipment to the kiosk.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowCancelConfirm(false)}
+                    className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                  >
+                    Go Back
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (timerRef.current) clearInterval(timerRef.current);
+                      setActiveSession(null);
+                      setTimeLeft(0);
+                      setTimerExpired(false);
+                      setShowCancelConfirm(false);
+                      navigate('/');
+                    }}
+                    className="flex-1 py-3.5 bg-red-500 hover:bg-red-400 text-white font-bold rounded-2xl transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)]"
+                  >
+                    Yes, Cancel
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
