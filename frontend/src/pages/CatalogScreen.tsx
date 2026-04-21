@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_URL } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -140,7 +141,8 @@ export function CatalogScreen() {
 
   const fetchEquipment = async () => {
     try {
-      const resp = await fetch('/api/equipment');
+      console.log("API URL:", API_URL);
+      const resp = await fetch(`${API_URL}/api/equipment`);
       
       const data = await resp.json();
       if (resp.ok) {
@@ -199,7 +201,7 @@ export function CatalogScreen() {
     if (cart.length === 0) return toast.error('Cart is empty');
     
     try {
-      const resp = await fetch('/api/payments/create-order', {
+      const resp = await fetch(`${API_URL}/api/payments/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -250,7 +252,7 @@ export function CatalogScreen() {
       order_id: data.orderId,
       handler: async (response: any) => {
         try {
-          const verifyResp = await fetch('/api/payments/verify', {
+          const verifyResp = await fetch(`${API_URL}/api/payments/verify`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { API_URL } from '../lib/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -29,7 +30,7 @@ export function LoginScreen() {
 
     setLoading(true);
     try {
-      const resp = await fetch('/api/auth/initiate-2fa', {
+      const resp = await fetch(`${API_URL}/api/auth/initiate-2fa`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: identifier }),
@@ -62,7 +63,7 @@ export function LoginScreen() {
 
     setLoading(true);
     try {
-      const resp = await fetch('/api/auth/verify-2fa', {
+      const resp = await fetch(`${API_URL}/api/auth/verify-2fa`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
