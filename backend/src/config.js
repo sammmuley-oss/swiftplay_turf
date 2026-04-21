@@ -43,10 +43,17 @@ export const config = {
   },
 
   // CORS
-  corsOrigins: (process.env.CORS_ORIGINS || "http://localhost:5173")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean),
+  corsOrigins: [
+    ...new Set([
+      // Always allow the production frontend
+      "https://swiftplay-turf.vercel.app",
+      // Parse additional origins from env (defaults to localhost for dev)
+      ...(process.env.CORS_ORIGINS || "http://localhost:5173")
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ]),
+  ],
   
   sessionTimeout: 5 * 60 * 1000, // 5 minutes in ms
 

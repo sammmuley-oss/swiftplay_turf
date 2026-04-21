@@ -52,8 +52,10 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin || config.corsOrigins.length === 0) return callback(null, true);
     if (config.corsOrigins.includes(origin)) return callback(null, true);
+    console.warn(`⚠️ CORS blocked origin: ${origin}`);
     return callback(new Error('Not allowed by CORS'));
   },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
 }));
 
