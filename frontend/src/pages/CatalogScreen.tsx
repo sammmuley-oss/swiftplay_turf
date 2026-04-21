@@ -15,7 +15,8 @@ import {
   Timer,
   AlertTriangle,
   Home,
-  XCircle
+  XCircle,
+  PlusCircle
 } from 'lucide-react';
 
 import toast from 'react-hot-toast';
@@ -71,6 +72,8 @@ export function CatalogScreen() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [timerExpired, setTimerExpired] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showExtendModal, setShowExtendModal] = useState(false);
+  const [extensionHours, setExtensionHours] = useState(1);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const navigate = useNavigate();
 
@@ -446,6 +449,14 @@ export function CatalogScreen() {
             </div>
           </div>
 
+          {/* Extend Booking Button */}
+          <button
+            onClick={() => { setExtensionHours(1); setShowExtendModal(true); }}
+            className="w-full py-4 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-400 font-bold rounded-2xl transition-all flex items-center justify-center gap-2 mb-3"
+          >
+            <PlusCircle className="w-5 h-5" /> Extend Booking Time
+          </button>
+
           {/* Cancel Booking Button */}
           <button
             onClick={() => setShowCancelConfirm(true)}
@@ -498,6 +509,98 @@ export function CatalogScreen() {
                     className="flex-1 py-3.5 bg-red-500 hover:bg-red-400 text-white font-bold rounded-2xl transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)]"
                   >
                     Yes, Cancel
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Extend Booking Modal */}
+        <AnimatePresence>
+          {showExtendModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-[70] p-6">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowExtendModal(false)}
+                className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-sm bg-[#16161a] border border-cyan-500/30 rounded-3xl p-8 text-center shadow-[0_0_50px_rgba(34,211,238,0.1)]"
+              >
+                <div className="w-16 h-16 bg-cyan-500/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <PlusCircle className="w-8 h-8 text-cyan-400" />
+                </div>
+                <h2 className="text-2xl font-display font-bold text-white mb-2">Extend Booking</h2>
+                <p className="text-slate-400 text-sm mb-6">
+                  Add more time to your session at <span className="text-cyan-400 font-bold">₹100/hr</span>
+                </p>
+
+                {/* Hour Selection */}
+                <div className="grid grid-cols-4 gap-2 mb-6">
+                  {[1, 2, 3, 4].map(hr => (
+                    <button
+                      key={hr}
+                      onClick={() => setExtensionHours(hr)}
+                      className={cn(
+                        "py-3 rounded-xl border text-sm font-bold transition-all",
+                        extensionHours === hr
+                          ? "bg-cyan-500 border-cyan-500 text-black shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+                          : "border-slate-800 bg-[#1c1c21] text-slate-400 hover:border-slate-700"
+                      )}
+                    >
+                      {hr} Hr{hr > 1 ? 's' : ''}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Cost Breakdown */}
+                <div className="bg-[#1c1c21] rounded-2xl p-4 mb-6 text-left">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-slate-500">Extension Duration</span>
+                    <span className="text-white font-bold">{extensionHours} Hour{extensionHours > 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-slate-500">Rate</span>
+                    <span className="text-slate-400">₹100/hr</span>
+                  </div>
+                  <div className="border-t border-slate-800 pt-3 mt-2 flex justify-between">
+                    <span className="text-cyan-400 font-bold text-xs uppercase tracking-widest">Extension Cost</span>
+                    <span className="text-xl font-display font-bold text-white">₹{extensionHours * 100}</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowExtendModal(false)}
+                    className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Add extension time to the countdown
+                      const additionalSeconds = extensionHours * 60 * 60;
+                      setTimeLeft(prev => prev + additionalSeconds);
+                      // Reset expired state in case of edge timing
+                      setTimerExpired(false);
+                      // Update session duration and total amount
+                      setActiveSession((prev: any) => ({
+                        ...prev,
+                        duration: prev.duration + extensionHours,
+                        totalAmount: prev.totalAmount + (extensionHours * 100),
+                      }));
+                      setShowExtendModal(false);
+                      toast.success(`Booking extended by ${extensionHours} hour${extensionHours > 1 ? 's' : ''}!`);
+                    }}
+                    className="flex-1 py-3.5 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-2xl transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+                  >
+                    Confirm ₹{extensionHours * 100}
                   </button>
                 </div>
               </motion.div>
