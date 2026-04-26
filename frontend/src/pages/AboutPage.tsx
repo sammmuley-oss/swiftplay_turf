@@ -16,7 +16,7 @@ export function AboutPage() {
 
         {/* Header */}
         <h1 className="font-display text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-3">
-          About SwiftPlay
+          About TurfGear
         </h1>
         <p className="text-slate-400 mb-10">
           Redefining the way you book and play sports.
@@ -26,7 +26,7 @@ export function AboutPage() {
         <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-700/60 backdrop-blur-lg mb-8">
           <h2 className="text-lg font-semibold text-slate-100 mb-3">Our Mission</h2>
           <p className="text-slate-300 leading-relaxed">
-            SwiftPlay Turf is a next-generation platform for booking sports turfs and renting equipment with ease.
+            TurfGear is a next-generation platform for booking sports turfs and renting equipment with ease.
             Built in Pune, India, we combine smart IoT technology with a seamless booking experience so you can focus
             on what matters most — playing your best game.
           </p>
@@ -69,15 +69,15 @@ export function AboutPage() {
 
         {/* Story */}
         <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-700/60 backdrop-blur-lg">
-          <h2 className="text-lg font-semibold text-slate-100 mb-3">Why SwiftPlay?</h2>
+          <h2 className="text-lg font-semibold text-slate-100 mb-3">Why TurfGear?</h2>
           <p className="text-slate-300 text-sm leading-relaxed mb-3">
-            Finding and booking a sports turf shouldn't be complicated. We built SwiftPlay to eliminate the hassle of
+            Finding and booking a sports turf shouldn't be complicated. We built TurfGear to eliminate the hassle of
             phone calls, waiting, and uncertainty. With our platform, you get transparent pricing, real-time slot availability,
             IoT-powered smart equipment rentals, and secure online payments — all in one place.
           </p>
           <p className="text-slate-300 text-sm leading-relaxed">
             Our goal is to make sports more accessible to everyone in Pune and beyond. Whether it's cricket, football,
-            badminton, or any other sport — SwiftPlay has you covered.
+            badminton, or any other sport — TurfGear has you covered.
           </p>
         </div>
       </div>

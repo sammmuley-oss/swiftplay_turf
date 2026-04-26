@@ -33,7 +33,7 @@ export function RefundPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">1. Overview</h2>
             <p>
-              At SwiftPlay Turf, we strive to provide you with the best sports turf booking experience. We understand that plans
+              At TurfGear, we strive to provide you with the best sports turf booking experience. We understand that plans
               can change, and this policy outlines the terms for cancellations and refunds for bookings made through our platform.
             </p>
           </section>
@@ -81,9 +81,9 @@ export function RefundPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-100 mb-3">5. Cancellation by SwiftPlay</h2>
+            <h2 className="text-lg font-semibold text-slate-100 mb-3">5. Cancellation by TurfGear</h2>
             <p className="mb-3">
-              In rare circumstances, SwiftPlay Turf may need to cancel a booking due to:
+              In rare circumstances, TurfGear may need to cancel a booking due to:
             </p>
             <ul className="list-disc list-inside space-y-2 pl-2">
               <li>Unforeseen maintenance or facility issues.</li>
@@ -98,10 +98,10 @@ export function RefundPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">6. How to Cancel a Booking</h2>
             <ul className="list-disc list-inside space-y-2 pl-2">
-              <li>Log in to your SwiftPlay account.</li>
+              <li>Log in to your TurfGear account.</li>
               <li>Navigate to your active bookings/rentals.</li>
               <li>Select the booking you wish to cancel and click "Cancel Booking".</li>
-              <li>Alternatively, contact us directly at <a href="mailto:support@swiftplay.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@swiftplay.com</a> or call <a href="tel:+919881925252" className="text-cyan-400 hover:text-cyan-300 transition-colors">+91 9881925252</a>.</li>
+              <li>Alternatively, contact us directly at <a href="mailto:support@turfgear.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@turfgear.com</a> or call <a href="tel:+919881925252" className="text-cyan-400 hover:text-cyan-300 transition-colors">+91 9881925252</a>.</li>
             </ul>
           </section>
 
@@ -129,8 +129,8 @@ export function RefundPolicyPage() {
               For any questions or concerns regarding refunds and cancellations:
             </p>
             <div className="mt-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
-              <p><strong className="text-slate-200">SwiftPlay Turf</strong></p>
-              <p>Email: <a href="mailto:support@swiftplay.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@swiftplay.com</a></p>
+              <p><strong className="text-slate-200">TurfGear</strong></p>
+              <p>Email: <a href="mailto:support@turfgear.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@turfgear.com</a></p>
               <p>Phone: <a href="tel:+919881925252" className="text-cyan-400 hover:text-cyan-300 transition-colors">+91 9881925252</a></p>
               <p>Location: Pune, Maharashtra, India</p>
             </div>

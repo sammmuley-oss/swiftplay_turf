@@ -33,7 +33,7 @@ export function TermsAndConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">1. Acceptance of Terms</h2>
             <p>
-              By accessing and using the SwiftPlay Turf platform ("Platform"), you accept and agree to be bound by these Terms and
+              By accessing and using the TurfGear platform ("Platform"), you accept and agree to be bound by these Terms and
               Conditions. If you do not agree to these terms, please do not use our services. These terms apply to all users,
               visitors, and others who access the Platform.
             </p>
@@ -42,7 +42,7 @@ export function TermsAndConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">2. Services Offered</h2>
             <p>
-              SwiftPlay Turf provides an online platform for booking sports turfs and renting sports equipment. Our services include
+              TurfGear provides an online platform for booking sports turfs and renting sports equipment. Our services include
               turf availability browsing, online booking, secure payment processing, and equipment rental management through IoT-enabled
               smart systems.
             </p>
@@ -104,8 +104,8 @@ export function TermsAndConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">8. Intellectual Property</h2>
             <p>
-              All content on the SwiftPlay platform, including but not limited to logos, text, graphics, images, and software,
-              is the property of SwiftPlay Turf and is protected by applicable intellectual property laws. You may not reproduce,
+              All content on the TurfGear platform, including but not limited to logos, text, graphics, images, and software,
+              is the property of TurfGear and is protected by applicable intellectual property laws. You may not reproduce,
               distribute, or create derivative works without our prior written consent.
             </p>
           </section>
@@ -113,7 +113,7 @@ export function TermsAndConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">9. Limitation of Liability</h2>
             <p>
-              SwiftPlay Turf shall not be liable for any indirect, incidental, special, or consequential damages arising from
+              TurfGear shall not be liable for any indirect, incidental, special, or consequential damages arising from
               the use of our Platform or services. Our total liability shall not exceed the amount paid by you for the specific
               booking or service in question. We are not responsible for injuries sustained during sports activities on booked turfs.
             </p>
@@ -150,8 +150,8 @@ export function TermsAndConditionsPage() {
               If you have any questions regarding these Terms and Conditions, please contact us:
             </p>
             <div className="mt-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
-              <p><strong className="text-slate-200">SwiftPlay Turf</strong></p>
-              <p>Email: <a href="mailto:support@swiftplay.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@swiftplay.com</a></p>
+              <p><strong className="text-slate-200">TurfGear</strong></p>
+              <p>Email: <a href="mailto:support@turfgear.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@turfgear.com</a></p>
               <p>Phone: <a href="tel:+919881925252" className="text-cyan-400 hover:text-cyan-300 transition-colors">+91 9881925252</a></p>
               <p>Location: Pune, Maharashtra, India</p>
             </div>

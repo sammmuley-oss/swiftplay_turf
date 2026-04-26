@@ -126,7 +126,7 @@ export function LoginScreen() {
               exit={{ opacity: 0, x: 30 }}
               transition={{ type: 'spring', stiffness: 100, damping: 20 }}
             >
-              <h1 className="text-3xl font-display font-bold text-white mb-2 text-center">SwiftPlay</h1>
+              <h1 className="text-3xl font-display font-bold text-white mb-2 text-center">TurfGear</h1>
               <p className="text-slate-400 text-sm mb-8 text-center uppercase tracking-widest">Email OTP Login</p>
 
 

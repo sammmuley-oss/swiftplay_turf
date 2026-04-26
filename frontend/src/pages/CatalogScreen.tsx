@@ -250,7 +250,7 @@ export function CatalogScreen() {
       key: import.meta.env.VITE_RAZORPAY_KEY || 'rzp_test_SQQIbXMMxbWjXh',
       amount: data.amount,
       currency: data.currency,
-      name: 'SwiftPlay Sports Vending',
+      name: 'TurfGear Sports Vending',
       description: 'Equipment Rental & Deposit',
       order_id: data.orderId,
       handler: async (response: any) => {
@@ -275,7 +275,7 @@ export function CatalogScreen() {
               equipmentList: cart,
               duration,
               totalAmount: data.totalAmount,
-              message: 'You can now collect your equipment from the SwiftPlay kiosk.'
+              message: 'You can now collect your equipment from the TurfGear kiosk.'
             });
             setShowPaymentModal(false);
             setCart([]);
@@ -288,7 +288,7 @@ export function CatalogScreen() {
       },
       prefill: {
         name: 'Player',
-        email: 'player@swiftplay.com',
+        email: 'player@turfgear.com',
       },
       theme: {
         color: '#22d3ee',
@@ -940,7 +940,7 @@ export function CatalogScreen() {
                     <span className="text-sm">Payable Amount</span>
                     <span className="font-display text-xl text-white font-bold">₹{calculateTotal()}</span>
                   </div>
-                  <p className="text-xs text-slate-600">Secure transaction powered by SWIFTPLAY Core.</p>
+                  <p className="text-xs text-slate-600">Secure transaction powered by TURFGEAR Core.</p>
                 </div>
 
 

@@ -9,7 +9,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <h3 className="font-display text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-3">
-              SWIFTPLAY
+              TURFGEAR
             </h3>
             <p className="text-slate-400 text-xs leading-relaxed mb-4">
               Smart IoT Sports Rental platform. Book turfs, rent equipment, and play your best game — all in one place.
@@ -76,10 +76,10 @@ export function Footer() {
               <li className="flex items-center gap-2">
                 <Mail size={14} className="text-cyan-500/60 shrink-0" />
                 <a
-                  href="mailto:support@swiftplay.com"
+                  href="mailto:support@turfgear.com"
                   className="text-xs text-slate-400 hover:text-cyan-400 transition-colors"
                 >
-                  support@swiftplay.com
+                  support@turfgear.com
                 </a>
               </li>
               <li className="flex items-center gap-2">
@@ -104,7 +104,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 pt-6 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-slate-500">
-            &copy; {new Date().getFullYear()} SwiftPlay Turf. All rights reserved.
+            &copy; {new Date().getFullYear()} TurfGear. All rights reserved.
           </p>
           <p className="text-xs text-slate-600 flex items-center gap-1.5">
             <Shield size={12} />

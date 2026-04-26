@@ -33,9 +33,9 @@ export function PrivacyPolicyPage() {
           <section>
             <h2 className="text-lg font-semibold text-slate-100 mb-3">1. Introduction</h2>
             <p>
-              SwiftPlay Turf ("we", "our", or "us") operates the SwiftPlay platform for booking sports turfs and rental equipment.
+              TurfGear ("we", "our", or "us") operates the TurfGear platform for booking sports turfs and rental equipment.
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website
-              and services. By accessing or using SwiftPlay, you agree to the terms of this Privacy Policy.
+              and services. By accessing or using TurfGear, you agree to the terms of this Privacy Policy.
             </p>
           </section>
 
@@ -100,8 +100,8 @@ export function PrivacyPolicyPage() {
             </ul>
             <p className="mt-3">
               To exercise any of these rights, please contact us at{' '}
-              <a href="mailto:support@swiftplay.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                support@swiftplay.com
+              <a href="mailto:support@turfgear.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+                support@turfgear.com
               </a>.
             </p>
           </section>
@@ -128,8 +128,8 @@ export function PrivacyPolicyPage() {
               If you have any questions about this Privacy Policy, please contact us:
             </p>
             <div className="mt-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
-              <p><strong className="text-slate-200">SwiftPlay Turf</strong></p>
-              <p>Email: <a href="mailto:support@swiftplay.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@swiftplay.com</a></p>
+              <p><strong className="text-slate-200">TurfGear</strong></p>
+              <p>Email: <a href="mailto:support@turfgear.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">support@turfgear.com</a></p>
               <p>Phone: <a href="tel:+919881925252" className="text-cyan-400 hover:text-cyan-300 transition-colors">+91 9881925252</a></p>
               <p>Location: Pune, Maharashtra, India</p>
             </div>

@@ -9,7 +9,7 @@ export function HomeScreen() {
         <h1 className="font-display text-4xl md:text-6xl font-bold text-center tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4">
           PLAY HARDER. RENT SMARTER.
         </h1>
-        <p className="text-slate-400 text-lg mb-10">SWIFTPLAY – Smart IoT Sports Rental</p>
+        <p className="text-slate-400 text-lg mb-10">TURFGEAR – Smart IoT Sports Rental</p>
         <div className="flex gap-4">
           <Link to="/catalog" className="kiosk-button">Get Started</Link>
           <Link to="/catalog" className="px-6 py-3 rounded-full border border-slate-600 text-slate-300 hover:border-cyan-500 hover:text-cyan-400 transition-colors">
@@ -22,7 +22,7 @@ export function HomeScreen() {
       <section id="about" className="bg-[#0a0a0c] py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-3">
-            About SwiftPlay
+            About TurfGear
           </h2>
           <p className="text-slate-400 text-center text-sm mb-10 max-w-xl mx-auto">
             A next-generation platform for booking sports turfs and renting equipment with ease, built in Pune, India.
@@ -85,14 +85,14 @@ export function HomeScreen() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <a
-              href="mailto:support@swiftplay.com"
+              href="mailto:support@turfgear.com"
               className="p-5 rounded-2xl bg-slate-900/60 border border-slate-700/60 backdrop-blur-lg flex flex-col items-center text-center hover:border-cyan-500/40 transition-colors"
             >
               <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 mb-3">
                 <Mail size={20} className="text-cyan-400" />
               </div>
               <h3 className="text-sm font-semibold text-slate-200 mb-1">Email</h3>
-              <p className="text-xs text-cyan-400">support@swiftplay.com</p>
+              <p className="text-xs text-cyan-400">support@turfgear.com</p>
             </a>
 
             <a

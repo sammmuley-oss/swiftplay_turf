@@ -31,10 +31,10 @@ export function ContactPage() {
             <div>
               <h3 className="text-sm font-semibold text-slate-200 mb-1">Email</h3>
               <a
-                href="mailto:support@swiftplay.com"
+                href="mailto:support@turfgear.com"
                 className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm"
               >
-                support@swiftplay.com
+                support@turfgear.com
               </a>
               <p className="text-xs text-slate-500 mt-1">We respond within 24 hours</p>
             </div>
@@ -82,7 +82,7 @@ export function ContactPage() {
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-700/60 backdrop-blur-lg">
           <h2 className="text-lg font-semibold text-slate-100 mb-3">Get in Touch</h2>
           <p className="text-slate-300 text-sm leading-relaxed">
-            Whether you need help with a booking, have feedback about our services, or want to partner with SwiftPlay Turf,
+            Whether you need help with a booking, have feedback about our services, or want to partner with TurfGear,
             feel free to reach out. Our support team is dedicated to ensuring you have the best experience on and off the turf.
           </p>
           <p className="text-slate-400 text-sm mt-4">
