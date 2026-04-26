@@ -59,10 +59,10 @@ router.post('/initiate-2fa', async (req, res, next) => {
     try {
       await sendEmail({
         to: email,
-        subject: 'Your SWIFTPLAY Verification Code',
+        subject: 'Your TURFGEAR Verification Code',
         html: `
           <div style="font-family: sans-serif; padding: 20px; color: #333; background: #0a0a0c; border-radius: 12px; border: 1px solid #333; text-align: center;">
-            <h2 style="color: #00d4ff;">SwiftPlay Security</h2>
+            <h2 style="color: #00d4ff;">TurfGear Security</h2>
             <p style="color: #ccc;">Your verification code is:</p>
             <h1 style="color: #fff; letter-spacing: 10px; background: #1a1a1c; padding: 20px; text-align: center; border-radius: 8px;">${otp}</h1>
             <p style="color: #777; font-size: 12px;">This code expires in 5 minutes.</p>
@@ -184,11 +184,11 @@ router.post('/send-otp', loginLimiter, async (req, res, next) => {
     try {
       await sendEmail({
         to: email,
-        subject: 'SwiftPlay Verification Code',
+        subject: 'TurfGear Verification Code',
         text: `Your verification code is: ${otp}\nThis code expires in 5 minutes.`,
         html: `
           <div style="font-family: sans-serif; padding: 20px; color: #333;">
-            <h2 style="color: #00d4ff;">SwiftPlay Verification</h2>
+            <h2 style="color: #00d4ff;">TurfGear Verification</h2>
             <p>Your verification code is:</p>
             <h1 style="letter-spacing: 5px; background: #f4f4f4; padding: 10px; display: inline-block;">${otp}</h1>
             <p>This code expires in 5 minutes.</p>

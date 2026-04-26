@@ -33,7 +33,7 @@ export const config = {
     port: parseInt(process.env.EMAIL_PORT || "587", 10),
     user: process.env.EMAIL_USER || "",
     pass: process.env.EMAIL_PASS || "",
-    from: process.env.EMAIL_FROM || "SWIFTPLAY <noreply@swiftplay.com>",
+    from: process.env.EMAIL_FROM || "TURFGEAR <noreply@turfgear.com>",
   },
 
   // SMS
@@ -46,7 +46,7 @@ export const config = {
   corsOrigins: [
     ...new Set([
       // Always allow the production frontend
-      "https://swiftplay-turf.vercel.app",
+      "https://turfgear-turf.vercel.app",
       // Parse additional origins from env (defaults to localhost for dev)
       ...(process.env.CORS_ORIGINS || "http://localhost:5173")
         .split(",")

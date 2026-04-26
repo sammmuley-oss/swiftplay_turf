@@ -102,7 +102,7 @@ async function bootstrap() {
 
     const port = config.port;
     server.listen(port, () => {
-      console.log(`🚀 SWIFTPLAY backend running on port ${port}`);
+      console.log(`🚀 TURFGEAR backend running on port ${port}`);
       console.log(`🌐 Origins allowed: ${config.corsOrigins.join(', ') || '*'}`);
     });
   } catch (err) {

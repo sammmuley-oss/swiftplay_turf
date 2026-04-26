@@ -46,7 +46,7 @@ async function sendFast2SMS(phone, otp) {
   console.log(`[SMS] OTP route failed (${data.message}), trying Quick Transactional route...`);
   const qParams = new URLSearchParams({
     authorization: config.fast2sms.apiKey,
-    message: `Your SWIFTPLAY verification code is: ${otp}. Valid for 5 minutes. Do not share this code.`,
+    message: `Your TURFGEAR verification code is: ${otp}. Valid for 5 minutes. Do not share this code.`,
     route: 'q',
     numbers: number,
     flash: '0',
@@ -73,7 +73,7 @@ async function sendTwilioSMS(phone, otp) {
     throw new Error('Twilio not configured');
   }
   const message = await twilioClient.messages.create({
-    body: `Your SWIFTPLAY verification code is: ${otp}. Valid for 5 minutes.`,
+    body: `Your TURFGEAR verification code is: ${otp}. Valid for 5 minutes.`,
     from: config.twilio.phoneNumber,
     to: phone,
   });
