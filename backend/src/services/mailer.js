@@ -1,50 +1,25 @@
-import nodemailer from "nodemailer";
-import { config } from "../config.js";
+/**
+ * Email Service — Console Simulation
+ * Logs OTP emails to the console instead of using an external service.
+ * Replace this with a real email provider when ready for production.
+ */
 
-// Create transporter
-const transporter = nodemailer.createTransport({
-  host: config.email.host,
-  port: config.email.port,
-  secure: config.email.port === 465, // true for 465, false for 587
-  auth: {
-    user: config.email.user,
-    pass: config.email.pass
-  }
-});
-
-// Verify connection
+// Verify connection (no-op in simulation mode)
 export async function verifyEmailServer() {
-  if (!config.email.user || !config.email.pass) {
-    console.error("❌ Email credentials missing in .env file");
-    return;
-  }
-  
-  try {
-    await transporter.verify();
-    console.log("✅ Email server connected");
-  } catch (error) {
-    console.error("❌ Email server connection failed:", error);
-  }
+  console.log("📧 Email service running in SIMULATION mode (no external provider)");
 }
 
-// Send email function
+// Simulated email send — logs to console
 export async function sendEmail({ to, subject, text, html }) {
-  try {
-    const mailOptions = {
-      from: config.email.from,
-      to,
-      subject,
-      text,
-      html
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-
-    console.log("📧 Email sent:", info.messageId);
-    return info;
-
-  } catch (error) {
-    console.error("❌ Error sending email:", error);
-    throw error;
+  console.log(`\n╔══════════════════════════════════════════╗`);
+  console.log(`║        📧 EMAIL SIMULATION MODE          ║`);
+  console.log(`╠══════════════════════════════════════════╣`);
+  console.log(`║  To:      ${to.padEnd(30)}║`);
+  console.log(`║  Subject: ${subject.padEnd(30)}║`);
+  if (text) {
+    console.log(`║  Body:    ${text.slice(0, 30).padEnd(30)}║`);
   }
+  console.log(`╚══════════════════════════════════════════╝\n`);
+
+  return { messageId: `sim-${Date.now()}`, simulated: true };
 }

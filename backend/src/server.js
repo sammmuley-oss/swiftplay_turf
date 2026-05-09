@@ -17,11 +17,11 @@ import { authRouter } from './routes/auth.js';
 import { equipmentRouter } from './routes/equipment.js';
 import { rentalRouter } from './routes/rentals.js';
 import { adminRouter } from './routes/admin.js';
-import { verifyEmailServer } from './services/mailer.js';
+
 import { paymentRouter } from './routes/payments.js';
 import { seedEquipments } from './seed/seedEquipments.js';
 
-console.log("Loaded email user:", process.env.EMAIL_USER ? "YES" : "NO");
+
 
 const app = express();
 const server = http.createServer(app);
@@ -97,7 +97,6 @@ async function bootstrap() {
     await mongoose.connect(config.mongoUri);
     console.log('✅ Connected to MongoDB');
     
-    await verifyEmailServer();
     await seedEquipments();
 
     const port = config.port;

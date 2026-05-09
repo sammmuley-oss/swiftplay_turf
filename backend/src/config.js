@@ -13,34 +13,7 @@ export const config = {
   // JWT
   jwtSecret: process.env.JWT_SECRET || "dev-secret-key",
 
-  // Cloudinary (Image Uploads)
-  cloudinary: {
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
-    apiKey: process.env.CLOUDINARY_API_KEY || "",
-    apiSecret: process.env.CLOUDINARY_API_SECRET || "",
-  },
 
-  // Twilio (SMS Notifications)
-  twilio: {
-    accountSid: process.env.TWILIO_ACCOUNT_SID || "",
-    authToken: process.env.TWILIO_AUTH_TOKEN || "",
-    phoneNumber: process.env.TWILIO_PHONE_NUMBER || "",
-  },
-
-  // Email (Nodemailer)
-  email: {
-    host: process.env.EMAIL_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.EMAIL_PORT || "587", 10),
-    user: process.env.EMAIL_USER || "",
-    pass: process.env.EMAIL_PASS || "",
-    from: process.env.EMAIL_FROM || "TURFGEAR <noreply@turfgear.com>",
-  },
-
-  // SMS
-  smsMode: process.env.SMS_MODE || "simulation",
-  fast2sms: {
-    apiKey: process.env.FAST2SMS_API_KEY || "",
-  },
 
   // CORS
   corsOrigins: [
