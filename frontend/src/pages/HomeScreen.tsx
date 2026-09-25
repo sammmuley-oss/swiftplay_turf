@@ -1,7 +1,13 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap, Users, Shield, MapPin, Mail, Phone } from 'lucide-react';
+import { prefetchEquipment } from '../lib/equipmentService';
 
 export function HomeScreen() {
+  useEffect(() => {
+    void prefetchEquipment();
+  }, []);
+
   return (
     <>
       {/* Hero Section — UNCHANGED */}

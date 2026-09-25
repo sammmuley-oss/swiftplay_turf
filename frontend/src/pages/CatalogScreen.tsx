@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { API_URL } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../lib/api';
+import { fetchEquipment } from '../lib/equipmentService';
+import { getValidCachedEquipment, type Equipment } from '../lib/equipmentCache';
 import { 
   ShoppingCart, 
   Clock, 
@@ -25,18 +27,6 @@ import { twMerge } from 'tailwind-merge';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-interface Equipment {
-  _id: string;
-  name: string;
-  sport: string;
-  pricePerHour: number;
-  image: string;
-  stock: number;
-  status: string;
-  depositAmount: number;
-  lockerId: string;
 }
 
 interface CartItem extends Equipment {
@@ -65,7 +55,8 @@ export function CatalogScreen() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'UPI'>('UPI');
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [_orderData, setOrderData] = useState<any>(null);
   const [successData, setSuccessData] = useState<any>(null);
   const [activeSession, setActiveSession] = useState<any>(null);
@@ -78,12 +69,48 @@ export function CatalogScreen() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchEquipment();
+    let isMounted = true;
+
+    const loadCatalog = async () => {
+      const cached = getValidCachedEquipment();
+      if (cached && isMounted) {
+        setEquipment(cached);
+        setLoading(false);
+      } else if (isMounted) {
+        setLoading(true);
+      }
+
+      try {
+        const fresh = await fetchEquipment();
+        if (!isMounted) return;
+        setEquipment(fresh);
+        setErrorMessage(null);
+      } catch (error) {
+        if (!isMounted) return;
+        const message = error instanceof Error ? error.message : 'Unable to load equipment';
+        setErrorMessage(message);
+        const cachedFallback = getValidCachedEquipment();
+        if (cachedFallback) {
+          setEquipment(cachedFallback);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadCatalog();
+
     // Load Razorpay Script
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
     script.async = true;
     document.body.appendChild(script);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Timer countdown effect
@@ -140,24 +167,6 @@ export function CatalogScreen() {
     if (!activeSession) return 0;
     const totalSeconds = activeSession.duration * 60 * 60;
     return ((totalSeconds - timeLeft) / totalSeconds) * 100;
-  };
-
-  const fetchEquipment = async () => {
-    try {
-      console.log("API URL:", API_URL);
-      const resp = await fetch(`${API_URL}/api/equipment`);
-      
-      const data = await resp.json();
-      if (resp.ok) {
-        setEquipment(data);
-      } else {
-        toast.error(data.error || 'Failed to load equipment');
-      }
-    } catch (err) {
-      toast.error('Connection error: Failed to reach catalog API');
-    } finally {
-      setLoading(false);
-    }
   };
 
   const addToCart = (item: Equipment) => {
@@ -307,6 +316,22 @@ export function CatalogScreen() {
   const filteredItems = filter === 'All' 
     ? equipment 
     : equipment.filter(item => item.sport.toLowerCase() === filter.toLowerCase());
+
+  const renderSkeletons = () => (
+    Array.from({ length: 8 }).map((_, index) => (
+      <div
+        key={`skeleton-${index}`}
+        className="group relative bg-[#16161a] border border-slate-800/50 rounded-3xl overflow-hidden"
+      >
+        <div className="aspect-square overflow-hidden relative bg-slate-800/80 animate-pulse" />
+        <div className="p-6 space-y-3">
+          <div className="h-5 w-2/3 rounded-full bg-slate-800 animate-pulse" />
+          <div className="h-4 w-1/3 rounded-full bg-slate-800 animate-pulse" />
+          <div className="h-10 w-full rounded-2xl bg-slate-800 animate-pulse" />
+        </div>
+      </div>
+    ))
+  );
 
   // ─── ACTIVE SESSION TIMER SCREEN ────────────────────────────────
   if (activeSession) {
@@ -687,8 +712,16 @@ export function CatalogScreen() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {loading && !equipment.length ? renderSkeletons() : null}
+
+          {!loading && errorMessage && (
+            <div className="col-span-full mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+              {errorMessage}
+            </div>
+          )}
+
           <AnimatePresence mode='popLayout'>
-            {filteredItems.map((item, idx) => (
+            {!loading && filteredItems.map((item, idx) => (
               <motion.div
                 key={item._id}
                 layout
@@ -702,6 +735,7 @@ export function CatalogScreen() {
                   <img 
                     src={item.image} 
                     alt={item.name} 
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute top-4 left-4">

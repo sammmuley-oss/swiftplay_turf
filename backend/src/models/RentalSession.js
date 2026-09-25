@@ -19,15 +19,37 @@ const rentalSchema = new mongoose.Schema(
       enum: ['Pending', 'Completed', 'Failed'], 
       default: 'Pending' 
     },
-    rentalStatus: { 
-      type: String, 
-      enum: ['Active', 'Completed', 'Reserved'], 
-      default: 'Reserved' 
+    status: {
+      type: String,
+      enum: ['active', 'completed', 'reserved'],
+      default: 'reserved',
+      index: true,
+    },
+    rentalStatus: {
+      type: String,
+      enum: ['active', 'completed', 'reserved'],
+      index: true,
     },
     paymentId: String, // Razorpay payment ID
     orderId: String,   // Razorpay order ID
   },
   { timestamps: true },
 );
+
+rentalSchema.pre('save', function syncRentalStatus(next) {
+  if (this.status && !this.rentalStatus) {
+    this.rentalStatus = this.status;
+  }
+
+  if (!this.status && this.rentalStatus) {
+    this.status = this.rentalStatus;
+  }
+
+  if (this.status && this.rentalStatus && this.status !== this.rentalStatus) {
+    this.rentalStatus = this.status;
+  }
+
+  next();
+});
 
 export const RentalSession = mongoose.model('RentalSession', rentalSchema);

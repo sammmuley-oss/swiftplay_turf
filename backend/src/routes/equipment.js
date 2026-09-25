@@ -10,10 +10,24 @@ router.get('/', async (req, res, next) => {
     const { sport } = req.query;
     const filter = {};
     if (sport) filter.sport = sport.toLowerCase();
-    
+
     filter.status = { $in: ['available', 'maintenance'] };
 
-    const equipment = await Equipment.find(filter).sort({ name: 1 });
+    const equipment = await Equipment.find(filter)
+      .select({
+        _id: 1,
+        name: 1,
+        sport: 1,
+        pricePerHour: 1,
+        depositAmount: 1,
+        image: 1,
+        stock: 1,
+        status: 1,
+        lockerId: 1,
+      })
+      .lean()
+      .sort({ name: 1 });
+
     res.json(equipment);
   } catch (err) {
     next(err);

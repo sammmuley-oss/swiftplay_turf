@@ -6,6 +6,7 @@ import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import { Server as SocketIOServer } from 'socket.io';
@@ -66,6 +67,7 @@ app.use(rateLimit({
   legacyHeaders: false,
 }));
 
+app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

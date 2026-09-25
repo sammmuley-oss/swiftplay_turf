@@ -51,7 +51,8 @@ router.post('/create-order', async (req, res, next) => {
         totalAmount,
         paymentMethod: 'Cash',
         paymentStatus: 'Pending',
-        rentalStatus: 'Reserved'
+        status: 'reserved',
+        rentalStatus: 'reserved'
       });
 
       // Update availability
@@ -120,7 +121,8 @@ router.post('/verify', async (req, res, next) => {
         totalAmount,
         paymentMethod: 'UPI',
         paymentStatus: 'Completed',
-        rentalStatus: 'Active',
+        status: 'active',
+        rentalStatus: 'active',
         paymentId: razorpay_payment_id,
         orderId: razorpay_order_id
       });
